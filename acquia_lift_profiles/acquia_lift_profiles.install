@@ -50,16 +50,16 @@ function acquia_lift_profiles_enable() {
  * Implements hook_disable().
  */
 function acquia_lift_profiles_disable() {
-  rebuild_subscribers_for_tracked_actions();
+  //rebuild_subscribers_for_tracked_actions();
 
   // Disable the Profiles web admin link.
-  $item = _acquia_lift_profiles_get_menu_link();
+  /*$item = _acquia_lift_profiles_get_menu_link();
   if (!empty($item) && $item['hidden'] == 0) {
     $item['options'] = unserialize($item['options']);
     $item['hidden'] = 1;
     menu_link_save($item);
     menu_rebuild();
-  }
+  }*/
 }
 
 /**
@@ -77,10 +77,10 @@ function acquia_lift_profiles_uninstall() {
   \Drupal::config('acquia_lift_profiles.settings')->clear('acquia_lift_profiles_udf_mappings');
 
   // Delete the menu link
-  $item = _acquia_lift_profiles_get_menu_link();
-  if (!empty($item)) {
-    menu_link_delete($item['mlid']);
-  }
+  //$item = _acquia_lift_profiles_get_menu_link();
+  //if (!empty($item)) {
+  //  menu_link_delete($item['mlid']);
+  //}
 }
 
 /**

@@ -17,6 +17,7 @@ use Drupal\acquia_lift\Client\AcquiaLiftDrupalHttpClient;
 use PersonalizeLogLevel;
 use Drupal\Core\Config\ConfigFactory;
 use GuzzleHttp\ClientInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 class AcquiaLiftProfilesAPI {
@@ -119,6 +120,24 @@ class AcquiaLiftProfilesAPI {
 
   }
 
+  /**
+   * Factory method for DrupalClient.
+   *
+   * When Drupal builds this class it does not call the constructor directly.
+   * Instead, it relies on this method to build the new object. Why? The class
+   * constructor may take multiple arguments that are unknown to Drupal. The
+   * create() method always takes one parameter -- the container. The purpose
+   * of the create() method is twofold: It provides a standard way for Drupal
+   * to construct the object, meanwhile it provides you a place to get needed
+   * constructor parameters from the container.
+   *
+   * In this case, we ask the container for an config.factory factory and a http_client. We then
+   * pass the factory to our class as a constructor parameter.
+   */
+  public static function create(ContainerInterface $container) {
+    return new static($container->get('config.factory'), $container->get('http_client'));
+  }
+
 
   /**
    * Singleton factory method.
@@ -184,25 +203,6 @@ class AcquiaLiftProfilesAPI {
     $instance->setHttpClient(new DummyAcquiaLiftProfilesHttpClient());
     $instance->setLogger(new AcquiaLiftTestLogger(TRUE));
     return $instance;
-  }
-
-  /**
-   * Private constructor as this is a singleton.
-   *
-   * @param $account_name
-   *   The name of the Acquia Lift Profiles account.
-   * @param $api_url
-   *   The URL to use for API calls.
-   * @param $access_key
-   *   The access key to use for authorization.
-   * @param $secret_key
-   *   The secret key to use for authorization.
-   */
-  private function __construct($account_name, $api_url, $access_key, $secret_key) {
-    $this->accountName = $account_name;
-    $this->apiUrl = $api_url;
-    $this->accessKey = $access_key;
-    $this->secretKey = $secret_key;
   }
 
   /**
